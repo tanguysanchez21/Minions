@@ -2,7 +2,10 @@ ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
     - Astar
+    - AstarDebugger
     - AstarTile
+    - CameraController
+    - PlayerController
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridBrush
     - UnityEditor.Tilemaps.GridBrushEditor
@@ -19,8 +22,10 @@ ScriptsOnlyBuild:
     UnityEditor.Graphs.dll:
     - UnityEditor.Graphs.AnimationBlendTree.Graph
     - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
+    - UnityEditor.Graphs.AnimationStateMachine.AnyStateNode
     - UnityEditor.Graphs.AnimationStateMachine.Graph
     - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
+    - UnityEditor.Graphs.AnimationStateMachine.StateNode
     - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
@@ -54,6 +59,12 @@ ScriptsOnlyBuild:
       Script: {instanceID: 11254}
     - Class: 114
       Script: {instanceID: 13144}
+    - Class: 114
+      Script: {instanceID: 20456}
+    - Class: 114
+      Script: {instanceID: 29162}
+    - Class: 114
+      Script: {instanceID: 31216}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
@@ -99,7 +110,7 @@ ScriptsOnlyBuild:
     className: TMP_Dropdown
   - hash:
       serializedVersion: 2
-      Hash: db2a5fa998d9bad4b1587e2715aff051
+      Hash: 80d7f77d376d5ea76e234738e127bfb4
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Astar
@@ -505,6 +516,24 @@ ScriptsOnlyBuild:
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: AstarTile
+  - hash:
+      serializedVersion: 2
+      Hash: 301792323906e0c9d5d6991608c1b205
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CameraController
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: PlayerController
+  - hash:
+      serializedVersion: 2
+      Hash: 6a98f9b45f9f83566a28c8ee23792dbe
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: AstarDebugger
   platform: 5
   scenePathNames:
   - Assets/Scenes/Main.unity
