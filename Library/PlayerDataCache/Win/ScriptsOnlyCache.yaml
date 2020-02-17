@@ -5,6 +5,8 @@ ScriptsOnlyBuild:
     - AstarDebugger
     - AstarTile
     - CameraController
+    - CursorControler
+    - DebugText
     - PlayerController
     Unity.2D.Tilemap.Editor.dll:
     - UnityEditor.Tilemaps.GridBrush
@@ -25,12 +27,19 @@ ScriptsOnlyBuild:
     - UnityEditor.Graphs.AnimationStateMachine.AnyStateNode
     - UnityEditor.Graphs.AnimationStateMachine.Graph
     - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
+    - UnityEditor.Graphs.AnimationStateMachine.StateEditor
     - UnityEditor.Graphs.AnimationStateMachine.StateNode
     - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
     - UnityEditor.TestTools.TestRunner.TestRun.TestJobDataHolder
+    UnityEngine.UI.dll:
+    - UnityEngine.EventSystems.EventSystem
+    - UnityEngine.EventSystems.StandaloneInputModule
+    - UnityEngine.UI.CanvasScaler
+    - UnityEngine.UI.GraphicRaycaster
+    - UnityEngine.UI.Image
   sceneClasses:
     Assets/Scenes/Main.unity:
     - Class: 1
@@ -56,15 +65,29 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11254}
+      Script: {instanceID: 11150}
     - Class: 114
-      Script: {instanceID: 13144}
+      Script: {instanceID: 11164}
     - Class: 114
-      Script: {instanceID: 20456}
+      Script: {instanceID: 11256}
     - Class: 114
-      Script: {instanceID: 29162}
+      Script: {instanceID: 11364}
     - Class: 114
-      Script: {instanceID: 31216}
+      Script: {instanceID: 11778}
+    - Class: 114
+      Script: {instanceID: 12416}
+    - Class: 114
+      Script: {instanceID: 12648}
+    - Class: 114
+      Script: {instanceID: 12698}
+    - Class: 114
+      Script: {instanceID: 13080}
+    - Class: 114
+      Script: {instanceID: 13150}
+    - Class: 114
+      Script: {instanceID: 20082}
+    - Class: 114
+      Script: {instanceID: 24026}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 157
@@ -74,6 +97,12 @@ ScriptsOnlyBuild:
     - Class: 212
       Script: {instanceID: 0}
     - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
       Script: {instanceID: 0}
     - Class: 19719996
       Script: {instanceID: 0}
@@ -90,6 +119,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: CanvasScaler
+  - hash:
+      serializedVersion: 2
+      Hash: 6a98f9b45f9f83566a28c8ee23792dbe
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: AstarDebugger
   - hash:
       serializedVersion: 2
       Hash: 3c08375166df118bd1801438fc36b92f
@@ -350,6 +385,12 @@ ScriptsOnlyBuild:
     className: HorizontalLayoutGroup
   - hash:
       serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: PlayerController
+  - hash:
+      serializedVersion: 2
       Hash: 35a9693c388776aaf487636491a20f11
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
@@ -384,6 +425,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TextMeshProUGUI
+  - hash:
+      serializedVersion: 2
+      Hash: e466da52cc8a60e2abaeac15e41d7bd4
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: CameraController
   - hash:
       serializedVersion: 2
       Hash: f336e086360abe49a3323e5f1583c35a
@@ -512,28 +559,22 @@ ScriptsOnlyBuild:
     className: PlayableTrack
   - hash:
       serializedVersion: 2
-      Hash: cf138383614c462c69341295e84d150c
+      Hash: 837a9bf2c9f0fa6c1699453f110f213e
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: AstarTile
   - hash:
       serializedVersion: 2
-      Hash: 301792323906e0c9d5d6991608c1b205
+      Hash: a578f849b851f2e56326cf2d7d82e54a
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: CameraController
+    className: DebugText
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+      Hash: c60e08307d9fe8ba620df297225a528a
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: PlayerController
-  - hash:
-      serializedVersion: 2
-      Hash: 6a98f9b45f9f83566a28c8ee23792dbe
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: AstarDebugger
+    className: CursorControler
   platform: 5
   scenePathNames:
   - Assets/Scenes/Main.unity

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    public GameObject cursor;
+
     private Camera self;
     private float targetZoom;
     private float scrollData;
@@ -38,6 +40,7 @@ public class CameraController : MonoBehaviour
         {
             isMoving = true;
             Cursor.visible = false;
+            cursor.GetComponent<Renderer>().enabled = false;
 
             mouseDelta = Input.mousePosition - lastMouseCoordinate;
 
@@ -61,6 +64,7 @@ public class CameraController : MonoBehaviour
         {
             isMoving = false;
             Cursor.visible = true;
+            cursor.GetComponent<Renderer>().enabled = true;
         }
     }
     void Zoom()

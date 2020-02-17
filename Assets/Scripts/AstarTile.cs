@@ -6,5 +6,6 @@ using UnityEngine.Tilemaps;
 [CreateAssetMenu(fileName = "New AstarTile", menuName = "Tiles/AstarTiles")]
 public class AstarTile : Tile
 {
+    public string state = "walkable";
     //...
 }
