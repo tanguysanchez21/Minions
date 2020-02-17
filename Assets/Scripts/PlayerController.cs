@@ -16,9 +16,4 @@ public class PlayerController : MonoBehaviour
     {
         //...
     }
-
-    void onBroom(bool state)
-    {
-        GetComponent<Animator>().SetBool("onBroom", state);
-    }
 }

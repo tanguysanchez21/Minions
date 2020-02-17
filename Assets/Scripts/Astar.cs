@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public enum TileType
 {
     LAVA,
-    DIRT,
+    WDIRT,
     LAVA1,
     LAVA2,
     LAVA3,
@@ -26,14 +27,13 @@ public class Astar : MonoBehaviour
 {
     private TileType tileType = 0;
 
+    public string walkable = "dirt";
+
     [SerializeField]
     private GameObject player;
 
     [SerializeField]
     private Tilemap tilemap;
-
-    [SerializeField]
-    private Tilemap selectionTilemap;
 
     [SerializeField]
     private Tile[] tiles;
@@ -43,9 +43,6 @@ public class Astar : MonoBehaviour
 
     [SerializeField]
     private LayerMask layerMask;
-
-    [SerializeField]
-    private LayerMask selectionLayer;
 
     private Vector3Int previousTile = new Vector3Int(-1,-1,-1);
 
@@ -57,47 +54,49 @@ public class Astar : MonoBehaviour
     private Dictionary<Vector3Int, Node> allNodes;
     private HashSet<Node> openList;
     private HashSet<Node> closedList;
+    private Stack<Vector3Int> path;
+
+    void Start() { AstarDebugger.MyInstance.DebugDisplay(); }
 
     // Update is called once per frame
     void Update()
     {
         mouseWorldPos = camera.ScreenToWorldPoint(Input.mousePosition);
-        clickPos = tilemap.WorldToCell(mouseWorldPos);
         playerPos = PlayerCellPos();
+        clickPos = tilemap.WorldToCell(mouseWorldPos);
 
-        //if (Input.GetMouseButtonDown(0))
-        //{
-        /* RaycastHit2D hitGround = Physics2D.Raycast(camera.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, Mathf.Infinity, layerMask); */
-
-        /* if (hitGround.collider != null)
-        {
-            Vector3 mouseWorldPos = camera.ScreenToWorldPoint(Input.mousePosition);
-            Vector3Int clickPos = tilemap.WorldToCell(mouseWorldPos);
-
-            //ChangeTileGround(clickPosGround);
-        } */
-        //}
+        if (Input.GetKeyDown(KeyCode.Escape))
+            AstarDebugger.MyInstance.DebugDisplay();
 
         if (Input.GetMouseButtonDown(1))
-        {
             AstarAlgorythm();
-        }
+
     }
 
     private void AstarAlgorythm()
     {
-        if (current == null) Initialize();
+        Reset();
 
-        List<Node> neighbors = FindNeighbors(current.position);
+        if (tilemap.GetTile(clickPos).name == walkable)
+        {
+            if (current == null) Initialize();
 
-        ExamineNeighbors(neighbors, current);
+            while(openList.Count > 0 && path == null)
+            {
+                List<Node> neighbors = FindNeighbors(current.position);
 
-        UpdateCurrentTile(ref current);
+                ExamineNeighbors(neighbors, current);
 
-        AstarDebugger.MyInstance.CreateTiles(openList, closedList, allNodes, playerPos, clickPos);
+                UpdateCurrentTile(ref current);
+
+                path = GeneratePath(current);
+            }
+
+            AstarDebugger.MyInstance.CreateTiles(openList, closedList, allNodes, playerPos, clickPos, path);
+        }
     }
 
-    private void ChangeTileGround(Vector3Int clickPos)
+    private void ChangeTile(Vector3Int clickPos)
     {
         tilemap.SetTile(clickPos, tiles[(int)tileType]);
     }
@@ -143,11 +142,8 @@ public class Astar : MonoBehaviour
 
                 if (y != 0 || x != 0)
                 {
-                    if(neighborPosition != playerPos && tilemap.GetTile(neighborPosition))
-                    {
-                        Node neighbor = GetNode(neighborPosition);
-                        neighbors.Add(neighbor);
-                    }
+                    if (neighborPosition != playerPos && tilemap.GetTile(neighborPosition) && tilemap.GetTile(neighborPosition).name == walkable)
+                        neighbors.Add(GetNode(neighborPosition));
                 }
             }
         }
@@ -159,20 +155,108 @@ public class Astar : MonoBehaviour
     {
         for(int i = 0; i < neighbors.Count; i++)
         {
-            openList.Add(neighbors[i]);
+            Node neighbor = neighbors[i];
 
-            CalcValues(current, neighbors[i], 0);
+            if (!ConnectedDiagonally(current, neighbor))
+                continue;
+
+            int gScore = DetermineGScore(neighbors[i].position, current.position);
+
+            if(openList.Contains(neighbor))
+            {
+                if(current.G + gScore < neighbor.G)
+                {
+                    CalcValues(current, neighbor, gScore);
+                }
+            }
+            else if(!closedList.Contains(neighbor))
+            {
+                CalcValues(current, neighbor, gScore);
+
+                openList.Add(neighbors[i]);
+            }
         }
     }
 
     private void CalcValues(Node parent, Node neighbor, int cost)
     {
+        neighbor.G = 0;
+        neighbor.H = 0;
+        neighbor.F = 0;
+
         neighbor.parent = parent;
+        neighbor.G = parent.G + cost;
+        neighbor.H = ((Mathf.Abs(neighbor.position.x - clickPos.x) + Mathf.Abs(neighbor.position.y - clickPos.y))) * 10;
+        neighbor.F = neighbor.G + neighbor.H;
+    }
+
+    private int DetermineGScore(Vector3Int neighbor, Vector3Int current)
+    {
+        int gScore = 0;
+
+        int x = current.x - neighbor.x;
+        int y = current.y - neighbor.y;
+
+        if (Mathf.Abs(x - y) % 2 == 1) gScore = 10;
+        else gScore = 14;
+
+        return gScore;
     }
 
     private void UpdateCurrentTile(ref Node current)
     {
         openList.Remove(current);
         closedList.Add(current);
+
+        if(openList.Count > 0)
+        {
+            current = openList.OrderBy(x => x.F).First();
+        }
+    }
+
+    private Stack<Vector3Int> GeneratePath(Node current)
+    {
+        if(current.position == clickPos)
+        {
+            Stack<Vector3Int> finalPath = new Stack<Vector3Int>();
+
+            while(current.position != playerPos)
+            {
+                finalPath.Push(current.position);
+
+                current = current.parent;
+            }
+
+            return finalPath;
+        }
+
+        return null;
+    }
+
+    private bool ConnectedDiagonally(Node current, Node neighbor)
+    {
+        Vector3Int direct = current.position - neighbor.position;
+
+        Vector3Int first = new Vector3Int(current.position.x + (direct.x * -1), current.position.y, current.position.z);
+        Vector3Int second = new Vector3Int(current.position.x, current.position.y + (direct.x * -1), current.position.z);
+
+        if (tilemap.GetTile(first).name != walkable || tilemap.GetTile(second).name != walkable)
+            return false;
+
+        return true;
+    }
+
+    public Stack<Vector3Int> GetPath() { return path; }
+
+    public void Reset()
+    {
+        if(allNodes != null)
+        {
+            AstarDebugger.MyInstance.Reset();
+
+            allNodes.Clear();
+            path = null;
+            current = null;
+        }
     }
 }

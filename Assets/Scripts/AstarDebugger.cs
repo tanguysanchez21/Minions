@@ -38,11 +38,13 @@ public class AstarDebugger : MonoBehaviour
     [SerializeField]
     private GameObject debugTextPrefab;
 
+    private Stack<Vector3Int> tiles;
+
     private List<GameObject> debugObjects = new List<GameObject>();
 
     private Vector3Int previousStart, previousGoal;
 
-    public void CreateTiles(HashSet<Node> openList, HashSet<Node> closedList, Dictionary<Vector3Int, Node> allNodes, Vector3Int start, Vector3Int goal)
+    public void CreateTiles(HashSet<Node> openList, HashSet<Node> closedList, Dictionary<Vector3Int, Node> allNodes, Vector3Int start, Vector3Int goal, Stack<Vector3Int> path = null)
     {
         foreach(Node node in openList)
         {
@@ -54,32 +56,45 @@ public class AstarDebugger : MonoBehaviour
             ColorTile(node.position, closeColor);
         }
 
-        if (goal != start)
+        if(path != null)
         {
-            tilemap.SetTile(previousStart, null);
-            tilemap.SetTile(previousGoal, null);
-
-            ColorTile(start, startColor);
-            ColorTile(goal, goalColor);
-
-            previousStart = start;
-            previousGoal = goal;
-
-            foreach(KeyValuePair<Vector3Int, Node> node in allNodes)
+            foreach(Vector3Int pos in path)
             {
-                if(node.Value.parent != null)
+                if(pos != start && pos != goal)
                 {
-                    GameObject go = Instantiate(debugTextPrefab, canvas.transform);
-                    go.transform.position = grid.CellToWorld(node.Key);
-                    debugObjects.Add(go);
-                    GenerateDebugText(node.Value, go.GetComponent<DebugText>());
+                    ColorTile(pos, pathColor);
                 }
+            }
+        }
+
+        tilemap.SetTile(previousStart, null);
+        tilemap.SetTile(previousGoal, null);
+
+        ColorTile(start, startColor);
+        ColorTile(goal, goalColor);
+
+        previousStart = start;
+        previousGoal = goal;
+
+        foreach(KeyValuePair<Vector3Int, Node> node in allNodes)
+        {
+            if(node.Value.parent != null)
+            {
+                GameObject go = Instantiate(debugTextPrefab, canvas.transform);
+                go.transform.position = grid.CellToWorld(node.Key);
+                debugObjects.Add(go);
+                GenerateDebugText(node.Value, go.GetComponent<DebugText>());
             }
         }
     }
 
     private void GenerateDebugText(Node node, DebugText debugText)
     {
+        debugText.P.text = $"P:{node.position.x},{node.position.y}";
+        debugText.F.text = $"F:{node.F}";
+        debugText.G.text = $"G:{node.G}";
+        debugText.H.text = $"H:{node.H}";
+
         if (node.parent.position.x < node.position.x && node.parent.position.y == node.position.y)
         {
             debugText.MyArrow.localRotation = Quaternion.Euler(new Vector3(0, 0, 180));
@@ -119,5 +134,36 @@ public class AstarDebugger : MonoBehaviour
         tilemap.SetTile(position, tile);
         tilemap.SetTileFlags(position, TileFlags.None);
         tilemap.SetColor(position, color);
+
+        if (tiles == null) tiles = new Stack<Vector3Int>();
+
+        tiles.Push(position);
+    }
+
+    public void DebugDisplay()
+    {
+        if (canvas.gameObject.active) canvas.gameObject.SetActive(false);
+        else canvas.gameObject.SetActive(true);
+
+        Color c = tilemap.color;
+        c.a = c.a != 0 ? 0 : 1;
+        tilemap.color = c;
+    }
+
+    public void Reset()
+    {
+        foreach(GameObject go in debugObjects)
+        {
+            Destroy(go);
+        }
+
+        debugObjects.Clear();
+
+        foreach(Vector3Int tile in tiles)
+        {
+            tilemap.SetTile(tile, null);
+        }
+
+        tiles.Clear();
     }
 }
